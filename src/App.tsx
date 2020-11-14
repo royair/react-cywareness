@@ -1,26 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {observer} from 'mobx-react';
+import {Switch, Route, Redirect, useLocation} from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import {useStores} from './hooks/useStores';
+import {
+  LoginPage,
+  HomePage,
+  PrivateRoute,
+  SpinCentered
+} from './components/index';
+
+const App = observer(() => {
+  const {userStore} = useStores();
+  const {pathname} = useLocation();
+
+  return userStore.isReady
+      ? (
+          <Switch>
+            <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
+            <Route exact path={'/login'}>
+              <LoginPage />
+            </Route>
+
+            <PrivateRoute path="/home">
+              <HomePage />
+            </PrivateRoute>
+
+            <Route exact path="/*">
+              <Redirect to="/home" />
+            </Route>
+          </Switch>
+      )
+      : <SpinCentered />;
+});
 
 export default App;
