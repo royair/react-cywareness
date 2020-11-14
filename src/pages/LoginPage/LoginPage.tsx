@@ -23,7 +23,7 @@ const LoginPage = observer(() => {
 
   useEffect(() => {
     if (userStore.isAuthenticated) history.replace(from);
-  }, [userStore.isAuthenticated]);
+  }, [userStore.isAuthenticated, from, history]);
 
 
   const onFinish = async (values: { username: string, password: string }) => {
